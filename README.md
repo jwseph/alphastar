@@ -1,5 +1,5 @@
 # Competitive programming
-I love cp!
+cp is both a blessing and a curse
 
 Solution files prefixed with # are unfinished.
 
