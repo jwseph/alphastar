@@ -116,36 +116,40 @@ struct SCC {
 };
 
 struct Lift {
-    int N, L, timer = 0;
-    vector<vector<int>> A, P;
+    int n, l, timer = 0;
+    vector<vector<int>> a, p;
     vector<int> tin, tout;
-    Lift(int N): N(N), A(N), tin(N), tout(N) {
-        L = ceil(log2(N));
-        P.resize(N, vector<int>(L+1));
+    Lift(int n): n(n), a(n), tin(n), tout(n) {
+        l = ceil(log2(n))+1;
+        p.resize(n, vector<int>(l, -1));
     }
-    void add(int i, int j) { A[i].push_back(j), A[j].push_back(i); }
-    void dfs(int i, int p = -1) {
-        tin[i] = timer++;
-        P[i][0] = p >= 0 ? p : i;
-        for (int k = 1; k <= L; ++k) {
-            P[i][k] = P[P[i][k-1]][k-1];
+    void add(int i, int j) { a[i].push_back(j), a[j].push_back(i); }
+    void dfs(int i) {
+        tin[i] = ++timer;
+        if (p[i][0] < 0) p[i][0] = i;
+        for (int k = 1; k < l; ++k) {
+            p[i][k] = p[p[i][k-1]][k-1];
         }
-        for (int j: A[i]) {
-            if (j == p) continue;
-            dfs(j, i);
+        for (int j: a[i]) {
+            if (j == p[i][0]) continue;
+            p[j][0] = i;
+            dfs(j);
         }
-        tout[i] = timer++;
+        tout[i] = ++timer;
     }
-    bool is_ans(int a, int i) {
+    bool is_a(int a, int i) {
         return tin[a] <= tin[i] && tout[i] <= tout[a];
     }
-    int lca(int i, int j) {
-        if (is_ans(i, j)) return i;
-        if (is_ans(j, i)) return j;
-        for (int k = L; k >= 0; --k) {
-            if (!is_ans(P[i][k], j)) i = P[i][k];
+    int top_before(int i, int j) {
+        for (int k = l-1; k >= 0; --k) {
+            if (!is_a(p[i][k], j)) i = p[i][k];
         }
-        return P[i][0];
+        return i;
+    }
+    int lca(int i, int j) {
+        if (is_a(i, j)) return i;
+        if (is_a(j, i)) return j;
+        return p[top_before(i, j)][0];
     }
 };
 
@@ -318,3 +322,10 @@ struct Primes {
         }
     }
 };
+
+// debugging tips
+// - check no ; on for() one-liner
+// - modulo 10^9+7?
+// - try #define int long long
+// - try #define endl '\n'
+// - try a small checker program

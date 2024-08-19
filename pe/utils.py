@@ -68,7 +68,7 @@ class Trie(dict):
             t = t[c]
             if t.end: yield i+1
 
-class RabinKarp:
+class RabinKarp:  # awice
     def __init__(self, A):
         if isinstance(A, str):
             A = (ord(c)-ord('a')+7 for c in A)
@@ -166,7 +166,7 @@ class Primes:  # ty 小羊肖恩, https://codeforces.com/blog/entry/54090
 
     # def phi2(self, x, n):
     #     # Count integers <= x relatively prime to n
-    #     # O(2^distinct pf * dpf)
+    #     # O(2^distinct_pf * distinct_pf)
     #     P = [p for p, k in self.factorization(n)]
     #     res = 0
     #     for k in range(0, len(P)+1):
